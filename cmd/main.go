@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/viveksingh-01/jarvis-auth/config"
 	"github.com/viveksingh-01/jarvis-auth/routes"
 )
 
@@ -18,6 +19,9 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading the .env file.")
 	}
+
+	// Establish connection to DB
+	config.ConnectToDB()
 
 	// Initialize the router
 	r := mux.NewRouter()
