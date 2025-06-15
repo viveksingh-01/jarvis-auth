@@ -6,15 +6,22 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/viveksingh-01/jarvis-auth/routes"
 )
 
 func main() {
 	fmt.Println("Welcome to JARVIS authentication system.")
 
+	// Load environment variables from .env file
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading the .env file.")
 	}
+
+	// Initialize the router
+	r := mux.NewRouter()
+	routes.RegisterAuthRoutes(r)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -22,5 +29,6 @@ func main() {
 	}
 
 	log.Println("Server started at port", port)
-	log.Fatal(http.ListenAndServe(port, nil))
+	// Start the server with the router and port
+	log.Fatal(http.ListenAndServe(port, r))
 }
