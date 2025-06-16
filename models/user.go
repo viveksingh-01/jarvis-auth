@@ -6,6 +6,6 @@ import (
 
 type User struct {
 	ID       primitive.ObjectID `bson:"_id,omitempty"`
-	Username string             `bson:"username" validate:"required"`
-	Password string             `bson:"password" validate:"required"`
+	Username string             `bson:"username" validate:"required,min=6,max=12"`
+	Password string             `bson:"password" validate:"required,min=8,max=12"`
 }
