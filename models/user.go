@@ -7,5 +7,5 @@ import (
 type User struct {
 	ID       primitive.ObjectID `bson:"_id,omitempty"`
 	Username string             `bson:"username" validate:"required"`
-	Password string             `bson:"password"`
+	Password string             `bson:"password" validate:"required"`
 }
