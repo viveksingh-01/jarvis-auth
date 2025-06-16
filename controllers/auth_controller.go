@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/viveksingh-01/jarvis-auth/models"
+	"github.com/viveksingh-01/jarvis-auth/utils"
 )
 
 func Register(w http.ResponseWriter, r *http.Request) {
@@ -29,6 +30,11 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	// Decode the JSON request body into the User struct and handle any decoding errors
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		http.Error(w, "Invalid request payload: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := utils.ValidateUser(user); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
