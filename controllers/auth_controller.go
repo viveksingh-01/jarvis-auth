@@ -7,7 +7,14 @@ import (
 
 	"github.com/viveksingh-01/jarvis-auth/models"
 	"github.com/viveksingh-01/jarvis-auth/utils"
+	"go.mongodb.org/mongo-driver/mongo"
 )
+
+var userCollection *mongo.Collection
+
+func SetUserCollection(c *mongo.Collection) {
+	userCollection = c
+}
 
 func Register(w http.ResponseWriter, r *http.Request) {
 

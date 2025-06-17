@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/viveksingh-01/jarvis-auth/controllers"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -39,4 +40,9 @@ func ConnectToDB() {
 	// This allows other parts of the application to access the database
 	// The client.Database method is used to specify the database name
 	DB = client.Database("jarvisdb")
+
+	if DB == nil {
+		log.Fatal("Database connection is not initialized")
+	}
+	controllers.SetUserCollection(DB.Collection("users"))
 }
