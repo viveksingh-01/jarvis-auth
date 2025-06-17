@@ -68,7 +68,16 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 	user.Password = hashedPassword
 
-	log.Println(user)
+	// Insert record in the database
+	if _, err = userCollection.InsertOne(context.TODO(), user); err != nil {
+		http.Error(w, "Error creating user", http.StatusInternalServerError)
+		return
+	}
+	log.Printf("New user registered: %s", user.Username)
+
+	// Write the response back to the client
+	w.WriteHeader(http.StatusCreated)
+	w.Write([]byte("User registered successfully!"))
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
