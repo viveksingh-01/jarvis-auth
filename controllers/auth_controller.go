@@ -60,6 +60,14 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Generate hashed-password and store as password
+	hashedPassword, err := utils.HashPassword(user.Password)
+	if err != nil {
+		http.Error(w, "Error hashing password", http.StatusInternalServerError)
+		return
+	}
+	user.Password = hashedPassword
+
 	log.Println(user)
 }
 
