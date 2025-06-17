@@ -1,12 +1,14 @@
 package controllers
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/viveksingh-01/jarvis-auth/models"
 	"github.com/viveksingh-01/jarvis-auth/utils"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -40,8 +42,21 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Validate the User struct fields
 	if err := utils.ValidateUser(user); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Check if the username already exists in the collection
+	var existingUser models.User
+	err := userCollection.FindOne(context.TODO(), bson.M{"username": user.Username}).Decode(&existingUser)
+	if err == nil {
+		http.Error(w, "Username already exists, please try again", http.StatusBadRequest)
+		return
+	}
+	if err != mongo.ErrNoDocuments {
+		http.Error(w, "Database error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
