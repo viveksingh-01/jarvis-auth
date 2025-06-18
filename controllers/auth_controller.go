@@ -20,16 +20,9 @@ func SetUserCollection(c *mongo.Collection) {
 
 func Register(w http.ResponseWriter, r *http.Request) {
 
-	//  Check if the request method is POST
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed.", http.StatusMethodNotAllowed)
-		return
-	}
-
-	// Validate the content-type
-	if r.Header.Get("Content-Type") != "application/json" {
-		http.Error(w, "Content-Type must be application/json", http.StatusUnsupportedMediaType)
-		return
+	// Validate request method and content-type
+	if err := validateRegisterRequest(r); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
 	// Create a User struct to hold the registration data
@@ -84,4 +77,16 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	// TODO
+}
+
+func validateRegisterRequest(r *http.Request) error {
+	//  Check if the request method is POST
+	if r.Method != http.MethodPost {
+		return http.ErrNotSupported
+	}
+	// Validate the content-type
+	if r.Header.Get("Content-Type") != "application/json" {
+		return http.ErrNotSupported
+	}
+	return nil
 }
