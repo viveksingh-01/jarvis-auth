@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/viveksingh-01/jarvis-auth/models"
 	"github.com/viveksingh-01/jarvis-auth/utils"
@@ -60,6 +61,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user.Password = hashedPassword
+	user.CreatedAt = time.Now()
 
 	// Insert record in the database
 	if _, err = userCollection.InsertOne(context.TODO(), user); err != nil {
