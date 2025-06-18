@@ -77,7 +77,9 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	// Write the response back to the client
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("User registered successfully!"))
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Registration successful. You can now log in.",
+	})
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
