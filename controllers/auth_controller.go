@@ -91,6 +91,21 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var user models.User
+
+	// Get user from DB based on username
+	err := userCollection.FindOne(context.TODO(), bson.M{"username": input.Username}).Decode(&user)
+	if err != nil {
+		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+		return
+	}
+
+	// Validate input password using hashed-password
+	if !utils.ValidatePassword(input.Password, user.Password) {
+		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+		return
+	}
+
 	// TODO
 }
 
