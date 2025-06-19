@@ -78,6 +78,19 @@ func Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
+	if err := validateRegisterRequest(r); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var input models.User
+
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		log.Println(err.Error())
+		http.Error(w, "Invalid input, please check and try again.", http.StatusBadRequest)
+		return
+	}
+
 	// TODO
 }
 
