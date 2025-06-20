@@ -22,7 +22,7 @@ func SetUserCollection(c *mongo.Collection) {
 func Register(w http.ResponseWriter, r *http.Request) {
 
 	// Validate request method and content-type
-	if err := validateRegisterRequest(r); err != nil {
+	if err := validateRequest(r); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
@@ -78,7 +78,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	if err := validateRegisterRequest(r); err != nil {
+	if err := validateRequest(r); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -106,10 +106,19 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO
+	// Generate JWT
+	token, err := utils.GenerateJWT(user.ID.Hex())
+	if err != nil {
+		http.Error(w, "Failed to generate token", http.StatusInternalServerError)
+		return
+	}
+
+	// Write the response back to the client
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"token": token})
 }
 
-func validateRegisterRequest(r *http.Request) error {
+func validateRequest(r *http.Request) error {
 	//  Check if the request method is POST
 	if r.Method != http.MethodPost {
 		return http.ErrNotSupported
